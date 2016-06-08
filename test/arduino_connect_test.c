@@ -3,6 +3,7 @@
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
+
 #include "../ArduinoInterface/term2Arduino.h"
 
 int main( int argc, char* argv[])
@@ -25,4 +26,5 @@ int main( int argc, char* argv[])
   host_read( fd, rbuf, 20);
 
   printf("host_read: %s\n", rbuf);
+	return 0;
 }

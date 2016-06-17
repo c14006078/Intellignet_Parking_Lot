@@ -14,9 +14,9 @@ sql_h init_h()
 	return con_h;
 }
 
-void connect_db( sql_h con_h, char* ip, char* username, char* password)
+void connect_db( sql_h con_h, char* ip, char* username, char* password, char* database, int port)
 {
-	if( mysql_real_connect( con_h, ip, username, password, NULL, 0, NULL, 0) == NULL)
+	if( mysql_real_connect( con_h, ip, username, password, database, port, NULL, 0) == NULL)
 		error_call( con_h);
 	#ifdef SQL_DEBUG
 		printf("Already connect with DB.\nip			: %s\nusername: %s\npassword: %s\n", ip, username, password);

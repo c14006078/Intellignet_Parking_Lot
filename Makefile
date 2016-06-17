@@ -18,12 +18,15 @@ SQLO := MySQL_Interface/mysql_api.o
 OBJS :=
 
 test1o := test/arduino_connect_test.o
+test1o1:= test/arduino_test_fence.o
 test1 := arduino_test
+test11:= arduino_fence
 test2o := test/mysql_connect_test.o
 test2 := mysql_test
 
 RMOBJ :=\
 	$(ARDO) $(test1o) $(test1)\
+	$(test1o1) $(test11)\
 	$(SQLO) $(test2o) $(test2)
 
 .PHONY: all
@@ -34,6 +37,9 @@ all: $(EXEC)
 
 $(test1): $(test1o) $(ARDO)
 	$(CC) $(CFLAGS) -o $@ $(test1o) $(ARDO)
+
+$(test11): $(test1o1) $(ARDO)
+	$(CC) $(CFLAGS) -o $@ $(test1o1) $(ARDO)
 
 $(test2): $(test2o) $(SQLO)
 	$(CC) $(CFLAGS) -o $@ $(test2o) $(SQLO) $(LDFLAGS) $(INC_PATH)

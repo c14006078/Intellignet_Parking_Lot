@@ -1,4 +1,9 @@
 typedef MYSQL *sql_h;
+typedef MYSQL_RES *sql_r;
+typedef enum Bool {false, true} Bool;
+
+MYSQL_ROW row;
+MYSQL_FIELD *field;
 
 sql_h init_h( void);
 

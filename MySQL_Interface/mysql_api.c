@@ -32,6 +32,36 @@ void db_cmd( sql_h con_h, char* cmd)
 	#endif
 }
 
+sql_r ret_store( sql_h con_h)
+{
+	sql_r result = (sql_r) malloc( sizeof( MYSQL_RES));
+	result = mysql_store_result( con_h);
+
+	if( result == NULL) error_call( con_h);
+	#ifdef SQL_DEBUG
+		printf("result not NULL\n");
+	#endif
+
+	return result;
+}
+
+Bool ret_get_row( sql_r result)
+{
+	row = mysql_fetch_row( result);
+	return row ? true : false;
+}
+
+int num_ret_fields( sql_r result)
+{
+	return mysql_num_fields( result);
+}
+
+Bool ret_get_fields( sql_r result)
+{
+	field = mysql_fetch_field( result);
+	return field? true : false;
+}
+
 void error_call( sql_h con_h)
 {
 	fprintf( stderr, "%s\n", mysql_error( con_h));

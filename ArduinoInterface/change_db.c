@@ -3,6 +3,7 @@
 #include<string.h>
 #include<mysql/mysql.h>
 #include<time.h>
+#include<math.h>
 int main(int argc,char* argv[]){
 	MYSQL *conn_ptr;
 	MYSQL mysql;
@@ -10,7 +11,7 @@ int main(int argc,char* argv[]){
 	MYSQL_RES *result;
 	char id[]="1";
 	char state[]="1";
-	char car_id[]="245-CBA";
+	char car_id[]="aaa-CBA";
 	char p_query[99] = "UPDATE parkingstate SET state=";
 	char s_query[99] = "UPDATE parkingfee SET outtime='";
 	char n_query[99] = "INSERT INTO parkingfee (carid,intime,outtime,fee) VALUES ('";
@@ -42,7 +43,7 @@ int main(int argc,char* argv[]){
 		*/
 		
 		//car_state
-		/*
+		/*	
 		time_t timep;
 		struct tm *p;
 		time(&timep);
@@ -85,8 +86,52 @@ int main(int argc,char* argv[]){
 			if(strcmp(row[1],car_id)==0){
 				flag=1;
 				if(strcmp(row[3],"000000000000")==0){
+					int fee;
+					char in_year[4];
+					in_year[0]=row[2][0];
+					in_year[1]=row[2][1];
+					in_year[2]=row[2][2];
+					in_year[3]=row[2][3];
+					char in_mon[2];
+					in_mon[0]=row[2][4];
+					in_mon[1]=row[2][5];
+					char in_day[2];
+					in_day[0]=row[2][6];
+					in_day[1]=row[2][7];
+					char in_hour[2];
+					in_hour[0]=row[2][8];
+					in_hour[1]=row[2][9];
+					char in_min[2];
+					in_min[0]=row[2][10];
+					in_min[1]=row[2][11];
+					int min = (in_min[0]-'0')*10+(in_min[1]-'0');
+				
+					printf("%d %d %d %d %d \n",atoi(in_year),atoi(in_mon),atoi(in_day),atoi(in_hour),atoi(in_min));
+					double count =0;
+					struct tm p2;
+					memset(&p2,0,sizeof(p2));
+					p2.tm_year = atoi(in_year)-1900;
+					p2.tm_mon = atoi(in_mon)-1;
+					p2.tm_mday = atoi(in_day);
+					p2.tm_hour = atoi(in_hour);
+					p2.tm_min = atoi(in_min);
+					time_t t1 = mktime(&p2);
+					time_t t2 = mktime(p);
+					//printf("%u   %u\n",(unsigned int)t1,(unsigned int)t2);
+					float  time_diff = difftime(t2,t1);
+					printf("%f\n",time_diff);
+					float t_hour= (float)(((time_diff/60/60)));
+					int f_hour;
+					f_hour = ceil(t_hour);
+					printf("%d\n",f_hour);
+					fee = f_hour*30;
+					char f_fee[10]="";
+					sprintf(f_fee,"%d",fee);
+					f_fee[strlen(f_fee)]='\0';
 					strcat(s_query,realtime);
-					strcat(s_query,"' WHERE carid='");
+					strcat(s_query,"',fee=");
+					strcat(s_query,f_fee);
+					strcat(s_query," WHERE carid='");
 					strcat(s_query,row[1]);
 					strcat(s_query,"' AND outtime='000000000000'");
 					s_query[strlen(s_query)]='\0';

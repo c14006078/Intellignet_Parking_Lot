@@ -23,11 +23,16 @@ test1 := arduino_test
 test11:= arduino_fence
 test2o := test/mysql_connect_test.o
 test2 := mysql_test
+test3o := test/alpr_test_jpg_stdout_redirect.o
+test3 := alpr_jpg
+test3o1 := test/alpr_test_webcame_com_pipe.o
+test31 := alpr_webcam
 
 RMOBJ :=\
 	$(ARDO) $(test1o) $(test1)\
 	$(test1o1) $(test11)\
-	$(SQLO) $(test2o) $(test2)
+	$(SQLO) $(test2o) $(test2)\
+	$(test3o) $(test3)$(test3o1) $(test31)
 
 .PHONY: all
 all: $(EXEC)
@@ -43,6 +48,12 @@ $(test11): $(test1o1) $(ARDO)
 
 $(test2): $(test2o) $(SQLO)
 	$(CC) $(CFLAGS) -o $@ $(test2o) $(SQLO) $(LDFLAGS) $(INC_PATH)
+
+$(test3): $(test3o)
+	$(CC) $(CFLAGS) -o $@ $(test3o)
+
+$(test31): $(test3o1)
+	$(CC) $(CFLAGS) -o $@ $(test3o1)
 
 clean:
 	$(RM) -f $(RMOBJ)

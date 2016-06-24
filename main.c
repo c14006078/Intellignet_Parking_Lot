@@ -33,7 +33,7 @@ int main()
 		close( pipe_d2h[1]);
 		
 		/*arduino*/
-		int fd_fence, res_fence;
+		int fd_fence, res_fence = -1;
 		int fd_ultra, res_ultra;
 		struct termios oldtio, newtio;
 		struct termios oldtio2, newtio2;
@@ -60,12 +60,18 @@ int main()
     		bzero(&newtio, sizeof(newtio));
 		bzero(&newtio2, sizeof(newtio2));
 		// confiduration
-    		newtio.c_cflag, newtio2.c_cflag= BAUDRATE|CS8|CLOCAL|CREAD;
-    		newtio.c_iflag, newtio2.c_iflag = IGNPAR;
-    		newtio.c_oflag, newtio2.c_oflag = 0;
-    		newtio.c_lflag, newtio2.c_oflag = 0;
-    		newtio.c_cc[VTIME], newtio2.c_cc[VTIME]=0;
-    		newtio.c_cc[VMIN], newtio2.c_cc[VMIN]=10;
+    		newtio.c_cflag = BAUDRATE|CS8|CLOCAL|CREAD ;
+		newtio2.c_cflag= BAUDRATE|CS8|CLOCAL|CREAD;
+		newtio.c_iflag = IGNPAR;
+    		newtio2.c_iflag = IGNPAR;
+    		newtio.c_oflag = 0 ; 
+		newtio2.c_oflag = 0;
+    		newtio.c_lflag = 0 ;
+		newtio2.c_oflag = 0;
+    		newtio.c_cc[VTIME] = 0 ;
+		newtio2.c_cc[VTIME]=0;
+    		newtio.c_cc[VMIN] = 10 ;
+		newtio2.c_cc[VMIN]=10;
 
 	
     		// clean queue
@@ -79,41 +85,46 @@ int main()
     		while(1)
 		{
 	  	// read for fence
-      
-      			res_fence = read(fd_fence, buf_fence, 1);
+			
+      			res_fence = read(fd_fence, buf_fence, 255);
+			int T = 0, k;
+			for( k = 0; k < res_fence; k++)
+			{
+				if( buf_fence[k] == 'c')
+				{
+					T = 1;
+				}
+				buf_fence[k]='K';
+			}
 
-      			buf_fence[res_fence]= '\0';
-	  		if(buf_fence[0] == 'c' ){
+	  		if( T > 0 ){
 			  	/* notify main board to recognize 
 					if success, print 'y' to fence arduino
 			  	*/
 				int i=0, end = 0;
 				char buf[50];
 				char c[1];
-				c[1] = 'm';
+				c[0] = 'm';
 				while(1)
 				{
 					//getchar();
 					//printf("\ntimes %d\n", i);
 			
 					end = 0;
-					char c[1];
-					c[1] = 'm';
-
-
-					write( pipe_h2d[1], c, sizeof(char));
 					//printf("\nwrite to alpr success\n");
+					write( pipe_h2d[1], c, sizeof(char));
 
 					while(1)
 					{
-						if( end = read( pipe_d2h[0], buf, 50))
+						if( (end = read( pipe_d2h[0], buf, 50)) > 0 )
 						{
 							printf("end=%d", end);
-							if(end <6)
+							buf[end+1] = '\0';
+							printf("\n\nparent get: %s\n\n", buf);
+							if(end != 6)
 							{
 								write( pipe_h2d[1], c, sizeof(char));
 								printf("keyspace: Enter");
-								sleep(0.5);
 							}
 							else
 								break;
@@ -121,9 +132,6 @@ int main()
 								buf[end+1] = '\0';
 								printf("end=%s", buf);
 							}*/
-							sleep(0.5);
-							buf[end+1] = '\0';
-							printf("\n\nparent get: %s\n\n", buf);
 							//i++;
 						}
 			  		}
@@ -133,9 +141,10 @@ int main()
 						break;
 					}
 				}
+				printf("\n\nF**K\n\n");
 			}
 
-			printf("res=%d buf=%s\n", res_fence, buf_fence);
+			printf("res=%d buf=%c\n", res_fence, buf_fence[0]);
 		  
 	 
 		  	// read for ultrasonic

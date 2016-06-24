@@ -4,23 +4,36 @@
 #include<mysql/mysql.h>
 #include<time.h>
 #include<math.h>
+void parking_state(char*);
+void car_state(char*);
 int main(int argc,char* argv[]){
 	MYSQL *conn_ptr;
 	MYSQL mysql;
 	MYSQL_ROW row;
 	MYSQL_RES *result;
-	char id[]="1";
-	char state[]="1";
-	char car_id[]="aaa-CBA";
+	char test[]="1 0";
+	parking_state(test);
+	char car_id[]="321-CBA";
+	car_state(car_id);
+
+}
+void parking_state(char* state){
+
 	char p_query[99] = "UPDATE parkingstate SET state=";
-	char s_query[99] = "UPDATE parkingfee SET outtime='";
-	char n_query[99] = "INSERT INTO parkingfee (carid,intime,outtime,fee) VALUES ('";
-	strcat(p_query,state);
+	char buf[3];
+	strcpy(buf,state);
+	char s[2]="";
+	char n[2]="";
+	s[0] = buf[2];
+	n[0] = buf[0];
+	strcat(p_query,s);
 	strcat(p_query," WHERE id=");
-	strcat(p_query,id);
+	strcat(p_query,n);
 	p_query[strlen(p_query)]='\0';
-	unsigned int num_fields;
-	unsigned int i;
+	MYSQL *conn_ptr;
+	MYSQL mysql;
+	MYSQL_ROW row;
+	MYSQL_RES *result;
 	conn_ptr = mysql_init(NULL);
 	if(!conn_ptr)
 	{
@@ -29,21 +42,36 @@ int main(int argc,char* argv[]){
 	conn_ptr = mysql_real_connect(conn_ptr,"140.116.247.20","root","root","iparking",0,NULL,0);
 	if(conn_ptr){
 		// parking_state
-		/*
+		
 		if(!mysql_query(conn_ptr,p_query))
 		{
 			result = mysql_store_result(conn_ptr);
 			if(!result){
-				printf("error");
-				exit(1);
+		
 			}
 		}
-		while((row = mysql_fetch_row(result))!=NULL)
-		printf("%s \n",row[1]);
-		*/
 		
+	}
+	mysql_close(conn_ptr);
+}
+
+void car_state(char* car_id){
+	MYSQL *conn_ptr;
+	MYSQL mysql;
+	MYSQL_ROW row;
+	MYSQL_RES *result;
+	char s_query[99] = "UPDATE parkingfee SET outtime='";
+	char n_query[99] = "INSERT INTO parkingfee (carid,intime,outtime,fee) VALUES ('";
+	conn_ptr = mysql_init(NULL);
+	if(!conn_ptr)
+	{
+		printf("init_failed\n");
+	}
+	conn_ptr = mysql_real_connect(conn_ptr,"140.116.247.20","root","root","iparking",0,NULL,0);
+	if(conn_ptr){
+				
 		//car_state
-		/*	
+			
 		time_t timep;
 		struct tm *p;
 		time(&timep);
@@ -84,8 +112,8 @@ int main(int argc,char* argv[]){
 
 			// out
 			if(strcmp(row[1],car_id)==0){
-				flag=1;
 				if(strcmp(row[3],"000000000000")==0){
+					flag=1;
 					int fee;
 					char in_year[4];
 					in_year[0]=row[2][0];
@@ -155,12 +183,8 @@ int main(int argc,char* argv[]){
 					else { printf("wrong2");}
 
 			}
-
-		*/
-
 	}
-	else{
-		printf("no");
-	}
+	else (printf("no"));
 	mysql_close(conn_ptr);
+
 }

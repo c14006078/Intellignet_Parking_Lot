@@ -7,10 +7,6 @@
 void parking_state(char*);
 void car_state(char*);
 int main(int argc,char* argv[]){
-	MYSQL *conn_ptr;
-	MYSQL mysql;
-	MYSQL_ROW row;
-	MYSQL_RES *result;
 	char test[]="1 0";
 	parking_state(test);
 	char car_id[]="321-CBA";

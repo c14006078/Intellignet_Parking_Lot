@@ -15,7 +15,7 @@ INC_PATH= -I /usr/include/mysql
 EXEC := intelligentparkinglot
 ARDO := ArduinoInterface/term2Arduino.o
 SQLO := MySQL_Interface/mysql_api.o
-OBJS :=
+OBJS := main.o
 
 test1o := test/arduino_connect_test.o
 test1o1:= test/arduino_test_fence.o
@@ -29,6 +29,7 @@ test3o1 := test/alpr_test_webcame_com_pipe.o
 test31 := alpr_webcam
 
 RMOBJ :=\
+	$(EXEC) $(OBJS)\
 	$(ARDO) $(test1o) $(test1)\
 	$(test1o1) $(test11)\
 	$(SQLO) $(test2o) $(test2)\
@@ -37,6 +38,8 @@ RMOBJ :=\
 .PHONY: all
 all: $(EXEC)
 
+$(EXEC): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $<
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $< $(LDFLAGS) $(INC_PATH) $(SQLFLAGS)
 

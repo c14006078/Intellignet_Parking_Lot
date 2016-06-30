@@ -1,19 +1,3 @@
-Skip to content
-This repository
-Search
-Pull requests
-Issues
-Gist
- @knife1113
- Unwatch 4
-  Star 0
-  Fork 0 c14006078/Intellignet_Parking_Lot
- Code  Issues 0  Pull requests 0  Wiki  Pulse  Graphs
-Branch: master Find file Copy pathIntellignet_Parking_Lot/main.c
-689fd29  24 minutes ago
-@lioren lioren Intergerate MySQL upadate the parking state and car information
-2 contributors @c14006078 @lioren
-RawBlameHistory     376 lines (332 sloc)  8.25 KB
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -139,6 +123,7 @@ int main()
 					if( end == 6)
 					{
 						write(fd_fence, "y\n", 2);
+						buf[6] = '\0';
 						car_state(buf);		  
 						break;
 					}
@@ -317,5 +302,3 @@ void car_state(char* car_id){
 	mysql_close(conn_ptr);
 
 }
-Status API Training Shop Blog About
-© 2016 GitHub, Inc. Terms Privacy Security Contact Help

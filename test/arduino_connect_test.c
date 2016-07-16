@@ -18,13 +18,29 @@ int main( int argc, char* argv[])
   p_termios option = (p_termios) malloc( sizeof( struct termios));
   fd = shake_hand( bridge, baudrate, option);
 
-  char* ws = "Hello Arduino";
-  printf("I say Hello to u\n");
-  host_write( fd, ws, strlen( ws) + 1);
+	int rdbyte;
 
-  char rbuf[20];
-  host_read( fd, rbuf, 20);
+  char* ws = "Hello_Arduino";
+  printf("I say Hello to u, strlen(ws) = %d\n", strlen(ws));
+  host_write( fd, ws, strlen( ws)); //+ 1);
 
-  printf("host_read: %s\n", rbuf);
+  /*char rbuf[20];
+  while( rdbyte = host_read( fd, rbuf, 20) )
+	{
+		if( rdbyte == -1)
+		{
+			printf("Read Nothing\n");
+			sleep(1);
+		}
+		else
+		{
+			rbuf[rdbyte+1] = '\0';
+  		printf("host_read: %d byte : %s\n", rdbyte, rbuf);
+		}
+		memset( rbuf, 0, 20);
+	}
+
+	rbuf[rdbyte+1] = '\0';
+  printf("host_read: %d byte : %s\n", rdbyte, rbuf);*/
 	return 0;
 }
